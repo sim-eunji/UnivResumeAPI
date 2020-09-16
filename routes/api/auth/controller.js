@@ -81,7 +81,23 @@ exports.login = async (req, res) => {
     } else {
       if(user.password == password) {
         // 로그인 성공
-        res.status(200).json(user)
+        const token = jwt.sign(
+          {
+            _id: user._id,
+            name: user.name
+          },
+          secret,
+          {
+            expiresIn: '7d',
+            issuer: 'kingeunji',
+            subject: 'userInfo'
+          }
+        )
+
+        res.status(200).json({
+          user,
+          token
+        })
 
       } else {
         res.status(400).json({
