@@ -6,22 +6,35 @@ const User = require('../../../models/user')
  *  name, email, password
  * }
  */
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
 
   const { email, name, password } = req.body
 
-  const newUser = new User()
-  newUser.email = email
-  newUser.name = name
-  newUser.password = password
+  try {
+    const user = await User.findOne({email}).exec()
+    if(user) {
+      res.status(409).json({
+        error: 'Dupliate Data'
+      })
+      return 
+    }
 
-  newUser.save(function(err) {
-    if (err) {
-      res.status(500).json({ error : err })
-      return
-    } 
-    res.status(200).json(newUser)
-  })
+    const newUser = new User()
+    newUser.email = email
+    newUser.name = name
+    newUser.password = password
+
+    newUser.save(function(err) {
+      if (err) {
+        res.status(500).json({ error : err })
+        return
+      } 
+      res.status(200).json(newUser)
+    })
+
+  } catch(err) {
+    res.status(500).json({ error : err })
+  }
 }
 
 exports.userlist = (req, res) => {
@@ -30,3 +43,4 @@ exports.userlist = (req, res) => {
     res.json(users);
   })
 }
+
