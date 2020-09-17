@@ -19,9 +19,9 @@ exports.register = (req, res) => {
 
   try {
     const univ = new University()
-    univ.name = name
-    univ.startDate = startDate
-    univ.endDate = endDate
+    univ.university_name = name
+    univ.start_date = startDate
+    univ.end_date = endDate
 
     univ.save(function(err) {
       if (err) {
